@@ -1,0 +1,680 @@
+{{ block content }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Resilience Investment Game - Results</title>
+</head>
+<body>
+<div class="container">
+    <!-- Header Section -->
+    <div class="results-header">
+        <h1 class="results-title">Experiment Completed Successfully!</h1>
+        <p class="completion-message">You have completed all rounds of the Supply Chain Resilience Investment Game.</p>
+    </div>
+
+    <!-- Final Summary Section -->
+    <div class="final-summary">
+        <h2>Final Summary</h2>
+        <div class="summary-grid">
+            <div class="summary-card">
+                <div class="card-icon">💰</div>
+                <div class="card-content">
+                    <div class="card-label">Initial Profit</div>
+                    <div class="card-value">{{ initial_profit }} ECU</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon">📈</div>
+                <div class="card-content">
+                    <div class="card-label">Total Spending on SC Resilience</div>
+                    <div class="card-value">{{ total_investment }} ECU</div>
+                </div>
+            </div>
+            <div class="summary-card">
+                <div class="card-icon">⚠️</div>
+                <div class="card-content">
+                    <div class="card-label">Total Disruption Cost</div>
+                    <div class="card-value">{{ total_disruption_cost }} ECU</div>
+                </div>
+            </div>
+            <div class="summary-card final-profit-card">
+                <div class="card-icon">🏆</div>
+                <div class="card-content">
+                    <div class="card-label">Final Profit</div>
+                    <div class="card-value final-profit">{{ final_profit }} ECU</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Results Table -->
+    <div class="results-table-section">
+        <h2>Detailed Round-by-Round Results</h2>
+        
+        <!-- Pagination Info -->
+        <div class="pagination-info">
+            Showing <span id="showing-start">1</span>-<span id="showing-end">20</span> of {{ total_results }} results
+        </div>
+
+        <div class="table-container">
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>SC Resilience Cost (ECU)</th>
+                        <th>Disruption Occurred</th>
+                        <th>Disruption Cost (ECU)</th>
+                        <th>Total Costs (ECU)</th>
+                        <th>Profit (ECU)</th>
+                    </tr>
+                </thead>
+                <tbody id="results-table-body">
+                    {% for result in all_results %}
+                    <tr class="result-row">
+                        <td class="round-number">{{ result.player.round_number }}</td>
+                        <td class="investment-amount">{{ result.investment }}</td>
+                        <td class="disruption-status">
+                            {% if result.is_disrupted %}
+                                <span class="status-badge disrupted">YES</span>
+                            {% else %}
+                                <span class="status-badge safe">NO</span>
+                            {% endif %}
+                        </td>
+                        <td class="disruption-cost">
+                            {% if result.cost_of_disruption == 0 %}
+                                <span class="cost-zero">-</span>
+                            {% else %}
+                                <span class="cost-value">{{ result.cost_of_disruption }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="total-costs">{{ result.total_costs }}</td>
+                        <td class="expected-profit">{{ result.expected_profit }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="pagination-controls">
+            <div class="pagination-buttons" id="pagination-buttons">
+                <button type="button" class="page-btn" onclick="goToPage(1)" id="first-btn">&laquo;</button>
+                <button type="button" class="page-btn" onclick="prevPage()" id="prev-btn">&lt;</button>
+                <div id="page-numbers" class="page-numbers"></div>
+                <button type="button" class="page-btn" onclick="nextPage()" id="next-btn">&gt;</button>
+                <button type="button" class="page-btn" onclick="goToPage(totalPages)" id="last-btn">&raquo;</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Performance Analysis -->
+    <div class="performance-analysis">
+        <h2>Performance Analysis</h2>
+        <div class="analysis-grid">
+            <div class="analysis-card">
+                <h3>Investment Strategy</h3>
+                <p>You invested a total of <strong>{{ total_investment }} ECU</strong> across all rounds to reduce supply chain risks.</p>
+                <p>Average investment per round: <strong>{{ average_investment }} ECU</strong></p>
+            </div>
+            <div class="analysis-card">
+                <h3>Risk Management</h3>
+                <p>Total disruption costs incurred: <strong>{{ total_disruption_cost }} ECU</strong></p>
+                <p>Number of disruptions: <strong>{{ num_disruptions }}</strong> out of {{ C.NUM_ROUNDS }} rounds</p>
+            </div>
+            <div class="analysis-card">
+                <h3>Financial Outcome</h3>
+                <p class="{% if profit_change >= 0 %}success-text{% else %}moderate-text{% endif %}">
+                    {% if profit_change >= 0 %}💰 Positive{% else %}💼 Moderate{% endif %} performance.
+                </p>
+                <p>Net change: <strong>{{ profit_change }} ECU</strong></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation-section">
+        <p class="thank-you-message">Thank you for participating in the Supply Chain Resilience Investment Game!</p>
+    </div>
+</div>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .otree-title {
+        display: none !important;
+    }
+
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #456882 0%, #1B3C53 100%);
+        min-height: 100vh;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .results-header {
+        text-align: center;
+        background: white;
+        padding: 40px 20px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .results-title {
+        font-size: 2.5rem;
+        color: #4caf50;
+        margin-bottom: 15px;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .completion-message {
+        font-size: 1.2rem;
+        color: #666;
+        margin: 0;
+    }
+
+    .final-summary {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .final-summary h2 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .summary-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 25px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .summary-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .final-profit-card {
+        border-color: #4caf50;
+        background: linear-gradient(135deg, #e8f5e8, #d4edda);
+    }
+
+    .card-icon {
+        font-size: 2.5rem;
+        width: 60px;
+        text-align: center;
+    }
+
+    .card-content {
+        flex: 1;
+    }
+
+    .card-label {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 5px;
+        font-weight: 500;
+    }
+
+    .card-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .final-profit {
+        color: #4caf50;
+        font-size: 2rem;
+    }
+
+    .results-table-section {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .results-table-section h2 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    /* Pagination Styles */
+    .pagination-info {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .pagination-controls {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .page-btn {
+        display: inline-block;
+        padding: 8px 12px;
+        margin: 0 4px;
+        border: 1px solid #dee2e6;
+        background: white;
+        color: #333;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 0.85rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .page-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: #f8f9fa;
+    }
+
+    .page-btn.active {
+        background: #6c7ae0;
+        color: white;
+        border-color: #6c7ae0;
+    }
+
+    .page-btn:hover:not(:disabled):not(.active) {
+        background: #f8f9fa;
+        border-color: #6c7ae0;
+        color: #6c7ae0;
+    }
+
+    /* Thêm style cho dấu ... */
+    .page-dots {
+        padding: 8px;
+        color: #666;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        border: 1px solid #dee2e6;
+    }
+
+    .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+    }
+
+    .results-table th {
+        background: linear-gradient(135deg, #6c7ae0, #5a6fd8);
+        color: white;
+        padding: 15px 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .results-table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #dee2e6;
+        font-size: 0.95rem;
+    }
+
+    .results-table tbody tr:hover {
+        background-color: #f8f9fa;
+    }
+
+    .results-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .round-number {
+        font-weight: bold;
+        color: #6c7ae0;
+    }
+
+    .investment-amount {
+        font-weight: 600;
+        color: #333;
+    }
+
+    .status-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    .status-badge.safe {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-badge.disrupted {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .cost-zero {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .cost-value {
+        color: #dc3545;
+        font-weight: bold;
+    }
+
+    .expected-profit {
+        font-weight: bold;
+        color: #28a745;
+    }
+
+    .performance-analysis {
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+    }
+
+    .performance-analysis h2 {
+        color: #333;
+        margin-bottom: 25px;
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    .analysis-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 25px;
+    }
+
+    .analysis-card {
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 5px solid #6c7ae0;
+    }
+
+    .analysis-card h3 {
+        color: #333;
+        margin-bottom: 15px;
+        font-size: 1.2rem;
+    }
+
+    .analysis-card p {
+        margin-bottom: 10px;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    .success-text {
+        color: #28a745 !important;
+        font-weight: 600;
+    }
+
+    .moderate-text {
+        color: #ffc107 !important;
+        font-weight: 600;
+    }
+
+    .challenge-text {
+        color: #17a2b8 !important;
+        font-weight: 600;
+    }
+
+    .navigation-section {
+        text-align: center;
+        background: white;
+        padding: 30px;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    }
+
+    .thank-you-message {
+        font-size: 1.6rem;
+        color: #333;
+        margin-bottom: 25px;
+        font-weight: 500;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .container {
+            padding: 15px;
+        }
+
+        .pagination-controls {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 15px;
+        }
+
+        .pagination-info {
+            text-align: center;
+        }
+
+        .pagination-buttons {
+            justify-content: center;
+        }
+
+        .page-numbers {
+            order: -1;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .results-title {
+            font-size: 2rem;
+        }
+
+        .completion-message {
+            font-size: 1rem;
+        }
+
+        .summary-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .analysis-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .card-value {
+            font-size: 1.5rem;
+        }
+
+        .final-profit {
+            font-size: 1.7rem;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 8px 6px;
+            font-size: 0.8rem;
+        }
+
+        .status-badge {
+            padding: 2px 8px;
+            font-size: 0.7rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .results-header,
+        .final-summary,
+        .results-table-section,
+        .performance-analysis,
+        .navigation-section {
+            padding: 20px 15px;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+        }
+
+        .card-value {
+            font-size: 1.3rem;
+        }
+
+        .final-profit {
+            font-size: 1.5rem;
+        }
+
+        .page-btn {
+            padding: 6px 8px;
+            font-size: 0.8rem;
+            min-width: 32px;
+        }
+    }
+</style>
+
+<script>
+    let currentPage = 1;
+    const itemsPerPage = 20;
+    let totalItems;
+    let totalPages;
+
+    function initializePagination() {
+        totalItems = document.querySelectorAll('.result-row').length;
+        totalPages = Math.ceil(totalItems / itemsPerPage);
+        updateTableDisplay();
+    }
+
+    function updateTableDisplay() {
+        const rows = document.querySelectorAll('.result-row');
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = Math.min(start + itemsPerPage, totalItems);
+        
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? 'table-row' : 'none';
+        });
+
+        document.getElementById('showing-start').textContent = start + 1;
+        document.getElementById('showing-end').textContent = Math.min(end, totalItems);
+
+        updatePaginationButtons();
+        renderPageNumbers();
+    }
+
+    function updatePaginationButtons() {
+        document.getElementById('first-btn').disabled = currentPage === 1;
+        document.getElementById('prev-btn').disabled = currentPage === 1;
+        document.getElementById('next-btn').disabled = currentPage === totalPages;
+        document.getElementById('last-btn').disabled = currentPage === totalPages;
+    }
+
+    function renderPageNumbers() {
+        const pageNumbers = document.getElementById('page-numbers');
+        pageNumbers.innerHTML = '';
+
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+
+        // Thêm nút trang đầu và dấu ...
+        if (startPage > 1) {
+            appendPageButton(pageNumbers, 1);
+            if (startPage > 2) {
+                pageNumbers.appendChild(createEllipsis());
+            }
+        }
+
+        // Thêm các nút trang giữa
+        for (let i = startPage; i <= endPage; i++) {
+            appendPageButton(pageNumbers, i);
+        }
+
+        // Thêm dấu ... và nút trang cuối
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                pageNumbers.appendChild(createEllipsis());
+            }
+            appendPageButton(pageNumbers, totalPages);
+        }
+    }
+
+    function appendPageButton(container, pageNum) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = `page-btn${pageNum === currentPage ? ' active' : ''}`;
+        button.textContent = pageNum;
+        button.onclick = () => goToPage(pageNum);
+        container.appendChild(button);
+    }
+
+    function createEllipsis() {
+        const span = document.createElement('span');
+        span.className = 'page-dots';
+        span.textContent = '...';
+        return span;
+    }
+
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages && page !== currentPage) {
+            currentPage = page;
+            updateTableDisplay();
+        }
+    }
+
+    function prevPage() {
+        if (currentPage > 1) {
+            goToPage(currentPage - 1);
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages) {
+            goToPage(currentPage + 1);
+        }
+    }
+
+    // Initialize pagination khi trang đã load hoàn toàn
+    document.addEventListener('DOMContentLoaded', initializePagination);
+</script>
+
+</body>
+</html>
+{{ endblock }}

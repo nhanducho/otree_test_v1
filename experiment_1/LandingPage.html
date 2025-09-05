@@ -1,0 +1,293 @@
+{{ block content }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Resilience Spending Experiment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        html, body {
+            margin: 0;
+            padding: 0 !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #456882 0%, #1B3C53 100%);
+            min-height: 100vh;
+            display: flex;
+            padding: 0 25% !important;
+        }
+
+        .container {
+            display: flex;
+            max-width: 100%;
+            margin: 0 auto;
+            min-height: 100vh;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+            padding: 0 !important;
+        }
+
+        .left-panel {
+            background: #2c3e50;
+            color: white;
+            flex: 0 0 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .brand-name {
+            font-size: 28px;
+            font-weight: 300;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .brand-description {
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.6;
+            font-weight: 300;
+        }
+
+        .right-panel {
+            background: #F9F3EF;
+            flex: 1;
+            padding: 60px 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            color: #2c3e50;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.3;
+        }
+
+        .content-text {
+            color: #666;
+            line-height: 1.8;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .learn-more-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            align-self: center;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .learn-more-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .highlight {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .right-panel {
+                padding: 40px 60px;
+            }
+            
+            .left-panel {
+                flex: 0 0 30%;
+                min-width: 280px;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .right-panel {
+                padding: 40px 50px;
+            }
+            
+            .left-panel {
+                flex: 0 0 35%;
+                min-width: 260px;
+                padding: 30px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-panel {
+                flex: none;
+                min-height: 200px;
+                padding: 40px 20px;
+            }
+
+            .brand-name {
+                font-size: 24px;
+            }
+
+            .brand-description {
+                font-size: 14px;
+            }
+
+            .right-panel {
+                padding: 40px 30px;
+            }
+
+            .welcome-title {
+                font-size: 24px;
+                margin-bottom: 30px;
+            }
+
+            .content-text {
+                font-size: 15px;
+                margin-bottom: 25px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .right-panel {
+                padding: 30px 20px;
+            }
+
+            .welcome-title {
+                font-size: 20px;
+                margin-bottom: 25px;
+            }
+
+            .content-text {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .learn-more-btn {
+                padding: 12px 25px;
+                font-size: 14px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .left-panel {
+                padding: 30px 15px;
+                min-height: 150px;
+            }
+
+            .brand-name {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+        }
+
+        /* Animation */
+        .left-panel {
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .right-panel {
+            animation: slideInRight 0.8s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* oTree specific styles */
+        .otree-body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .otree-title {
+            display: none;
+        }
+
+        /* Form styling for oTree integration */
+        .otree-btn-next {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+
+        .otree-btn-next:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <div class="right-panel">
+            <h2 class="welcome-title">Welcome to the Supply Chain Resilience Spending Experiment</h2>
+            
+            <p class="content-text" style="text-align: justify">
+                You are about to participate in an experimental decision-making in supply chain management. If you follow the instructions below carefully and complete the task, you are assured of earning <span class="highlight">€3 as a participation fee</span> and will be able to earn up to <span class="highlight">€10</span>, depending on your performance at the end of the game. We kindly ask you to read the task description with great care as it will affect the quality of your decision and your achievement in the end. If you have any questions during the game, please notify the research supporter by raising your hand to receive their assistance.
+            </p>
+
+            <p class="content-text" style="font-size: 30px; text-align: center"> Introduction
+            </p>
+
+            <p class="content-text" style="text-align: justify">
+                You will act as a <span class="highlight">general manager of an international firm</span>, serving mainly the European market. As your suppliers and manufacturing facilities are located in various countries around the world, they are constantly exposed to the uncertainty of disruption risk, which, in turn, will affect your business in case disruption happens. As a result, at the beginning of every quarter, equivalent to each round within the game, your task is to decide how much money to pour into <span class="highlight">SC contingencies risk management</span> (or building resilient SC), which helps to minimize the impact of SC disruption (e.g., Having sufficient safety stock, maintaining multiple suppliers...) and/or reduce the probability of SC disruption (e.g., Auditing and monitoring supplier, Reallocating manufacturing facilities out of high risk exposed countries...).If you decide not to invest or invest too little, you may incur costs related to SC disruptions (e.g., Due to foregone sales and future loss of customers to competitors...). On the other hand, if you invest too much in enforcing SC resilience, you will increase fixed costs due to excessive investment... The relationship between resilient SC investment and disruption is plotted in the line chart below, which is straightforward and intuitive.
+            </p>
+            
+            <button class="learn-more-btn" onclick="proceedToGame()">Let's start</button>
+        </div>
+    </div>
+</body>
+</html>
+{{ endblock }}
